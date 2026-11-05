@@ -526,3 +526,243 @@ if (labSections.length && "IntersectionObserver" in window) {
   );
   labSections.forEach((section) => observer.observe(section));
 }
+
+// Dos indicadores para una misma carga controlada por la persona.
+const loadingComparison = document.getElementById("carga-comparada");
+function setLoadingComparison(phase) {
+  const waiting = phase === "loading";
+  const completed = phase === "complete";
+  loadingComparison.dataset.phase = phase;
+  loadingComparison
+    .querySelectorAll(".loading-panel")
+    .forEach((panel) => panel.setAttribute("aria-busy", String(waiting)));
+  loadingComparison
+    .querySelectorAll(".loading-placeholder")
+    .forEach((element) => (element.hidden = completed));
+  loadingComparison
+    .querySelectorAll(".loading-content")
+    .forEach((element) => (element.hidden = !completed));
+  const finish = document.getElementById("loading-finish");
+  const start = document.getElementById("loading-start");
+  start.disabled = waiting;
+  start.textContent = completed ? "Repetir carga" : "Simular carga";
+  finish.disabled = !waiting;
+  document.getElementById("loading-status").textContent = waiting
+    ? "Consulta simulada en curso. Observa los dos indicadores y pulsa Completar carga para recibir el mismo contenido."
+    : "Carga completada. Ambos indicadores dieron paso a los mismos datos; la estructura del skeleton anticipaba el contenido.";
+}
+document.getElementById("loading-start")?.addEventListener("click", () => {
+  setLoadingComparison("loading");
+  document.getElementById("loading-finish").focus();
+});
+document.getElementById("loading-finish")?.addEventListener("click", () => {
+  setLoadingComparison("complete");
+  document.getElementById("loading-start").focus();
+});
+
+// Comparación de la misma tarea: cambia la jerarquía, no la información.
+document
+  .getElementById("show-design-notes")
+  ?.addEventListener("click", (event) => {
+    const expanded =
+      event.currentTarget.getAttribute("aria-expanded") !== "true";
+    event.currentTarget.setAttribute("aria-expanded", String(expanded));
+    event.currentTarget.textContent = expanded
+      ? "Ocultar decisiones de diseño"
+      : "Mostrar decisiones de diseño";
+    document.getElementById("design-notes").hidden = !expanded;
+    document.getElementById("antes-despues").dataset.notes = String(expanded);
+  });
+document.querySelectorAll("[data-screen-action]").forEach((button) =>
+  button.addEventListener("click", () => {
+    const [version, action] = button.dataset.screenAction.split("-");
+    document.getElementById("screen-feedback").textContent =
+      action === "confirm"
+        ? `Confirmación de prueba desde la versión ${version === "before" ? "Antes" : "Después"}. No se reservó una cita real.`
+        : "Volviste a la revisión de datos en esta comparación. Puedes probar la otra versión.";
+  }),
+);
+
+// Modelo didáctico del alcance: la distancia a la esquina inferior cambia de mano.
+const thumbButtons = [...document.querySelectorAll("[data-thumb-row]")];
+let thumbHand = "right";
+let selectedThumb = null;
+const reachNames = { easy: "Cómoda", middle: "Intermedia", far: "Lejana" };
+function refreshThumb() {
+  thumbButtons.forEach((button) => {
+    const row = Number(button.dataset.thumbRow);
+    const col = Number(button.dataset.thumbCol);
+    const distance = 2 - row + (thumbHand === "right" ? 2 - col : col);
+    const reach = distance <= 1 ? "easy" : distance <= 2 ? "middle" : "far";
+    button.dataset.reach = reach;
+    button.querySelector(".reach-label").textContent = reachNames[reach];
+    button.setAttribute(
+      "aria-label",
+      `${button.dataset.position}: zona ${reachNames[reach].toLowerCase()} en el modelo para mano ${thumbHand === "right" ? "derecha" : "izquierda"}`,
+    );
+    button.setAttribute("aria-pressed", String(button === selectedThumb));
+  });
+  if (selectedThumb) {
+    document.getElementById("thumb-result").textContent =
+      `${selectedThumb.dataset.position}: zona ${reachNames[selectedThumb.dataset.reach].toLowerCase()} para mano ${thumbHand === "right" ? "derecha" : "izquierda"} en este modelo. El alcance real depende del agarre y del dispositivo.`;
+  }
+}
+thumbButtons.forEach((button) =>
+  button.addEventListener("click", () => {
+    selectedThumb = button;
+    refreshThumb();
+  }),
+);
+document.querySelectorAll("[data-hand]").forEach((button) =>
+  button.addEventListener("click", () => {
+    thumbHand = button.dataset.hand;
+    document
+      .querySelectorAll("[data-hand]")
+      .forEach((item) =>
+        item.setAttribute("aria-pressed", String(item === button)),
+      );
+    refreshThumb();
+    if (!selectedThumb)
+      document.getElementById("thumb-result").textContent =
+        `Modelo de mano ${thumbHand === "right" ? "derecha" : "izquierda"} seleccionado. Toca una zona para explorar su alcance.`;
+  }),
+);
+if (thumbButtons.length) refreshThumb();
+
+// Contraste WCAG: conversión sRGB a luminancia relativa, sin redondear al evaluar.
+const contrastColors = { foreground: "#EEF3FF", background: "#111C30" };
+function relativeLuminance(hex) {
+  const channels = [1, 3, 5].map(
+    (offset) => parseInt(hex.slice(offset, offset + 2), 16) / 255,
+  );
+  const linear = channels.map((value) =>
+    value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4,
+  );
+  return linear[0] * 0.2126 + linear[1] * 0.7152 + linear[2] * 0.0722;
+}
+function renderContrast() {
+  const foreground = relativeLuminance(contrastColors.foreground);
+  const background = relativeLuminance(contrastColors.background);
+  const ratio =
+    (Math.max(foreground, background) + 0.05) /
+    (Math.min(foreground, background) + 0.05);
+  const preview = document.getElementById("contrast-preview");
+  preview.style.color = contrastColors.foreground;
+  preview.style.backgroundColor = contrastColors.background;
+  // El valor mostrado es conservador: nunca redondea hacia un aprobado aparente.
+  document.getElementById("contrast-ratio").textContent =
+    `${(Math.floor(ratio * 100 + 1e-9) / 100).toFixed(2).replace(".", ",")}:1`;
+  for (const [id, threshold, label] of [
+    ["contrast-normal", 4.5, "texto normal"],
+    ["contrast-large", 3, "texto grande"],
+  ]) {
+    const pass = ratio >= threshold;
+    const result = document.getElementById(id);
+    result.dataset.pass = String(pass);
+    result.textContent = `${pass ? "Cumple" : "No cumple"} AA para ${label} (mínimo ${String(threshold).replace(".", ",")}:1).`;
+  }
+}
+function showColorError() {
+  const invalid = document.querySelector(
+    '.color-pair input[aria-invalid="true"]',
+  );
+  document.getElementById("contrast-error").textContent = invalid
+    ? "Escribe un color completo con formato #RRGGBB. Se conserva el último color válido en la vista previa."
+    : "";
+}
+for (const side of ["foreground", "background"]) {
+  const picker = document.getElementById(`contrast-${side}`);
+  const text = document.getElementById(`contrast-${side}-hex`);
+  picker?.addEventListener("input", () => {
+    contrastColors[side] = picker.value.toUpperCase();
+    text.value = contrastColors[side];
+    text.setAttribute("aria-invalid", "false");
+    showColorError();
+    renderContrast();
+  });
+  text?.addEventListener("input", () => {
+    const valid = /^#[0-9a-f]{6}$/i.test(text.value);
+    text.setAttribute("aria-invalid", String(!valid));
+    if (valid) {
+      contrastColors[side] = text.value.toUpperCase();
+      picker.value = text.value;
+      renderContrast();
+    }
+    showColorError();
+  });
+}
+document.querySelectorAll("[data-contrast-preset]").forEach((button) =>
+  button.addEventListener("click", () => {
+    const colors =
+      button.dataset.contrastPreset === "pass"
+        ? ["#EEF3FF", "#111C30"]
+        : ["#999999", "#FFFFFF"];
+    ["foreground", "background"].forEach((side, i) => {
+      contrastColors[side] = colors[i];
+      document.getElementById(`contrast-${side}`).value = colors[i];
+      const input = document.getElementById(`contrast-${side}-hex`);
+      input.value = colors[i];
+      input.setAttribute("aria-invalid", "false");
+    });
+    showColorError();
+    renderContrast();
+  }),
+);
+if (document.getElementById("contrast-preview")) renderContrast();
+
+// Ampliación local: el contenedor no impone una altura ni recorta el texto.
+function updateTextScale(value) {
+  const percent = Number(value);
+  const slider = document.getElementById("text-scale");
+  slider.value = String(percent);
+  slider.setAttribute("aria-valuetext", `${percent} por ciento`);
+  document.getElementById("text-scale-value").textContent = `${percent} %`;
+  document
+    .getElementById("scalable-preview")
+    .style.setProperty("--text-scale", String(percent / 100));
+  document.getElementById("text-scale-feedback").textContent = "";
+}
+document
+  .getElementById("text-scale")
+  ?.addEventListener("input", (event) => updateTextScale(event.target.value));
+document
+  .getElementById("text-scale-reset")
+  ?.addEventListener("click", () => updateTextScale(100));
+document.getElementById("readable-confirm")?.addEventListener("click", () => {
+  document.getElementById("text-scale-feedback").textContent =
+    `Lectura confirmada con el texto al ${document.getElementById("text-scale").value} %. El control sigue disponible.`;
+});
+
+// La confirmación visual siempre funciona; la vibración es opcional y no verificable.
+document.getElementById("haptic-test")?.addEventListener("click", () => {
+  document.getElementById("haptic-preview").dataset.result = "confirmed";
+  document.getElementById("haptic-symbol").textContent = "✓";
+  document.getElementById("haptic-label").textContent =
+    "Acción confirmada en la demo";
+  const feedback = document.getElementById("haptic-feedback");
+  if (!document.getElementById("haptic-enabled").checked) {
+    feedback.textContent =
+      "Confirmación visual mostrada. La vibración está desactivada en esta prueba.";
+  } else if (typeof navigator.vibrate !== "function") {
+    feedback.textContent =
+      "Confirmación visual mostrada. Este navegador no ofrece la API de vibración.";
+  } else {
+    try {
+      const accepted = navigator.vibrate(40);
+      feedback.textContent = accepted
+        ? "Confirmación visual mostrada. Se solicitó una vibración breve; su percepción depende del equipo y sus preferencias."
+        : "Confirmación visual mostrada. El navegador rechazó la solicitud de vibración.";
+    } catch {
+      feedback.textContent =
+        "Confirmación visual mostrada. No se pudo solicitar la vibración en este entorno.";
+    }
+  }
+});
+document.getElementById("haptic-reset")?.addEventListener("click", () => {
+  document.getElementById("haptic-enabled").checked = false;
+  document.getElementById("haptic-preview").removeAttribute("data-result");
+  document.getElementById("haptic-symbol").textContent = "○";
+  document.getElementById("haptic-label").textContent = "Esperando tu acción";
+  document.getElementById("haptic-feedback").textContent =
+    "Prueba restablecida. La señal visual funciona aunque el dispositivo no tenga vibración.";
+});

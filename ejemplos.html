@@ -66,7 +66,12 @@
         ><a href="#estados">Estados</a><a href="#accesibilidad">Accesibilidad</a
         ><a href="#adaptacion">Adaptación</a><a href="#formulario">Validación</a
         ><a href="#sincronizacion">Conectividad</a
-        ><a href="#toque">Áreas táctiles</a><a href="#industria">Industria</a>
+        ><a href="#toque">Áreas táctiles</a><a href="#industria">Industria</a
+        ><a href="#antes-despues">Antes y después</a><a href="#pulgar">Pulgar</a
+        ><a href="#carga-comparada">Carga comparada</a
+        ><a href="#contraste">Contraste</a
+        ><a href="#texto-ampliable">Texto ampliable</a
+        ><a href="#haptica">Háptica</a>
       </nav>
       <section id="plataformas" class="demo-section">
         <div class="demo-text">
@@ -144,6 +149,82 @@
           </div>
         </div>
       </section>
+      <section class="demo-section comparison-section" id="antes-despues">
+        <div class="demo-text">
+          <span class="number">Una tarea, dos jerarquías</span>
+          <h2>Antes y después de organizar una pantalla</h2>
+          <p>
+            Ambas versiones contienen los mismos datos y acciones. La segunda
+            agrupa la información y diferencia la acción principal. La
+            comparación mantiene el texto legible en las dos versiones.
+          </p>
+          <button
+            type="button"
+            id="show-design-notes"
+            aria-expanded="false"
+            aria-controls="design-notes"
+          >
+            Mostrar decisiones de diseño
+          </button>
+          <ul id="design-notes" hidden>
+            <li>Un título define el propósito de la pantalla.</li>
+            <li>
+              Los datos relacionados se agrupan con etiquetas persistentes.
+            </li>
+            <li>Confirmar tiene mayor jerarquía que volver.</li>
+          </ul>
+        </div>
+        <div class="screen-comparison">
+          <article class="screen-before">
+            <h3>Antes</h3>
+            <div class="screen-sample">
+              <h4>Agendar cita</h4>
+              <p>Consulta general</p>
+              <p>Jueves, 10:30 a. m.</p>
+              <div class="sample-actions">
+                <button type="button" data-screen-action="before-back">
+                  Volver</button
+                ><button type="button" data-screen-action="before-confirm">
+                  Confirmar
+                </button>
+              </div>
+            </div>
+            <p class="sample-caption">
+              Datos dispersos y acciones con el mismo peso.
+            </p>
+          </article>
+          <article class="screen-after">
+            <h3>Después</h3>
+            <div class="screen-sample">
+              <h4>Agendar cita</h4>
+              <dl>
+                <dt>Servicio</dt>
+                <dd>Consulta general</dd>
+                <dt>Fecha y hora</dt>
+                <dd>Jueves, 10:30 a. m.</dd>
+              </dl>
+              <div class="sample-actions">
+                <button
+                  type="button"
+                  data-screen-action="after-confirm"
+                  class="primary-link"
+                >
+                  Confirmar</button
+                ><button type="button" data-screen-action="after-back">
+                  Volver
+                </button>
+              </div>
+            </div>
+            <p class="sample-caption">
+              Agrupación clara y una acción principal.
+            </p>
+          </article>
+          <p class="comparison-feedback" id="screen-feedback" role="status">
+            Los botones permiten probar la misma tarea en ambas versiones; no
+            reservan una cita real.
+          </p>
+        </div>
+      </section>
       <section id="ergonomia" class="demo-section reverse">
         <div class="demo-text">
           <svg
@@ -198,6 +279,114 @@
             ></p>
           </div>
         </div>
+        <div class="experiment" id="pulgar">
+          <div class="experiment-intro">
+            <p class="number">Prueba de alcance</p>
+            <h3>Explora la zona del pulgar</h3>
+            <p>
+              Cambia de mano y toca distintos puntos. El modelo representa un
+              alcance aproximado: el tamaño del teléfono, la postura y el agarre
+              pueden cambiarlo.
+            </p>
+            <div
+              class="segmented"
+              role="group"
+              aria-label="Mano que sostiene el teléfono"
+            >
+              <button type="button" data-hand="left" aria-pressed="false">
+                Mano izquierda</button
+              ><button type="button" data-hand="right" aria-pressed="true">
+                Mano derecha
+              </button>
+            </div>
+            <p id="thumb-result" role="status" aria-live="polite">
+              Toca una zona para consultar su alcance aproximado.
+            </p>
+          </div>
+          <div class="thumb-phone">
+            <div class="thumb-phone-title">Mapa didáctico de alcance</div>
+            <div
+              class="thumb-grid"
+              role="group"
+              aria-label="Puntos de alcance del pulgar"
+            >
+              <button
+                type="button"
+                data-thumb-row="0"
+                data-thumb-col="0"
+                data-position="Arriba, izquierda"
+              >
+                <span>Arriba<br />izquierda</span
+                ><small class="reach-label"></small></button
+              ><button
+                type="button"
+                data-thumb-row="0"
+                data-thumb-col="1"
+                data-position="Arriba, centro"
+              >
+                <span>Arriba<br />centro</span
+                ><small class="reach-label"></small></button
+              ><button
+                type="button"
+                data-thumb-row="0"
+                data-thumb-col="2"
+                data-position="Arriba, derecha"
+              >
+                <span>Arriba<br />derecha</span
+                ><small class="reach-label"></small></button
+              ><button
+                type="button"
+                data-thumb-row="1"
+                data-thumb-col="0"
+                data-position="Centro, izquierda"
+              >
+                <span>Centro<br />izquierda</span
+                ><small class="reach-label"></small></button
+              ><button
+                type="button"
+                data-thumb-row="1"
+                data-thumb-col="1"
+                data-position="Centro, centro"
+              >
+                <span>Centro<br />centro</span
+                ><small class="reach-label"></small></button
+              ><button
+                type="button"
+                data-thumb-row="1"
+                data-thumb-col="2"
+                data-position="Centro, derecha"
+              >
+                <span>Centro<br />derecha</span
+                ><small class="reach-label"></small></button
+              ><button
+                type="button"
+                data-thumb-row="2"
+                data-thumb-col="0"
+                data-position="Abajo, izquierda"
+              >
+                <span>Abajo<br />izquierda</span
+                ><small class="reach-label"></small></button
+              ><button
+                type="button"
+                data-thumb-row="2"
+                data-thumb-col="1"
+                data-position="Abajo, centro"
+              >
+                <span>Abajo<br />centro</span
+                ><small class="reach-label"></small></button
+              ><button
+                type="button"
+                data-thumb-row="2"
+                data-thumb-col="2"
+                data-position="Abajo, derecha"
+              >
+                <span>Abajo<br />derecha</span
+                ><small class="reach-label"></small>
+              </button>
+            </div>
+            <p>La etiqueta y el color indican el alcance.</p>
+          </div>
+        </div>
       </section>
       <section id="estados" class="demo-section">
         <div class="demo-text">
@@ -240,6 +429,57 @@
           <button id="state-action" class="primary-link" type="button">
             Ver citas
           </button>
+        </div>
+        <div
+          class="experiment loading-comparison"
+          id="carga-comparada"
+          data-phase="ready"
+        >
+          <div class="experiment-intro">
+            <p class="number">Dos formas de esperar</p>
+            <h3>Spinner frente a skeleton</h3>
+            <p>
+              El spinner indica actividad. El skeleton anticipa la estructura
+              del contenido. Ambos representan la misma consulta; ninguno
+              acelera la red.
+            </p>
+            <div class="experiment-actions">
+              <button type="button" id="loading-start">Simular carga</button
+              ><button type="button" id="loading-finish" disabled>
+                Completar carga
+              </button>
+            </div>
+            <p id="loading-status" role="status" aria-live="polite">
+              Inicia la prueba y completa la carga cuando quieras. La espera es
+              simulada.
+            </p>
+          </div>
+          <div class="loading-panels">
+            <div class="loading-panel" id="spinner-panel" aria-busy="false">
+              <h4>Spinner</h4>
+              <div class="loading-placeholder">
+                <span class="demo-spinner" aria-hidden="true"></span>
+                <p>Indicador de actividad</p>
+              </div>
+              <div class="loading-content" hidden>
+                <b>Consulta general</b>
+                <p>Jueves, 10:30 a. m.</p>
+              </div>
+            </div>
+            <div class="loading-panel" id="skeleton-panel" aria-busy="false">
+              <h4>Skeleton</h4>
+              <div class="loading-placeholder">
+                <div class="skeleton-shape" aria-hidden="true">
+                  <span></span><span></span><span></span>
+                </div>
+                <p>Estructura provisional</p>
+              </div>
+              <div class="loading-content" hidden>
+                <b>Consulta general</b>
+                <p>Jueves, 10:30 a. m.</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
       <section id="accesibilidad" class="demo-section reverse">
@@ -291,6 +531,123 @@
             ><input type="checkbox" /> La acción se identifica sin depender del
             color</label
           >
+        </div>
+        <div class="experiment" id="contraste">
+          <div class="experiment-intro">
+            <p class="number">Medición de contraste</p>
+            <h3>Comprueba una combinación</h3>
+            <p>
+              El verificador calcula la luminancia relativa de dos colores sRGB.
+              Para texto normal, WCAG AA exige 4,5:1; para texto grande, 3:1,
+              con las excepciones de la norma.
+            </p>
+            <p>
+              Texto grande: al menos 24 píxeles CSS, o unos 18,7 en negrita.
+            </p>
+            <div class="experiment-actions">
+              <button type="button" data-contrast-preset="pass">
+                Ver combinación suficiente</button
+              ><button type="button" data-contrast-preset="fail">
+                Ver combinación insuficiente
+              </button>
+            </div>
+          </div>
+          <div class="contrast-tool">
+            <div class="color-fields">
+              <div>
+                <label for="contrast-foreground">Color del texto</label>
+                <div class="color-pair">
+                  <input
+                    type="color"
+                    id="contrast-foreground"
+                    value="#eef3ff"
+                  /><input
+                    id="contrast-foreground-hex"
+                    type="text"
+                    value="#EEF3FF"
+                    maxlength="7"
+                    spellcheck="false"
+                    aria-label="Color del texto en hexadecimal"
+                    aria-describedby="color-format contrast-error"
+                  />
+                </div>
+              </div>
+              <div>
+                <label for="contrast-background">Color del fondo</label>
+                <div class="color-pair">
+                  <input
+                    type="color"
+                    id="contrast-background"
+                    value="#111c30"
+                  /><input
+                    id="contrast-background-hex"
+                    type="text"
+                    value="#111C30"
+                    maxlength="7"
+                    spellcheck="false"
+                    aria-label="Color del fondo en hexadecimal"
+                    aria-describedby="color-format contrast-error"
+                  />
+                </div>
+              </div>
+            </div>
+            <p id="color-format">
+              Formato hexadecimal: #RRGGBB. Puedes escribirlo o abrir el
+              selector.
+            </p>
+            <p id="contrast-error" role="status"></p>
+            <div id="contrast-preview" class="contrast-preview">
+              <span>Vista previa de la combinación</span>
+              <p>Una interfaz clara se puede leer.</p>
+            </div>
+            <div class="contrast-report" role="status" aria-live="polite">
+              <output
+                id="contrast-ratio"
+                aria-label="Relación de contraste"
+              ></output>
+              <p id="contrast-normal"></p>
+              <p id="contrast-large"></p>
+            </div>
+          </div>
+        </div>
+        <div class="experiment" id="texto-ampliable">
+          <div class="experiment-intro">
+            <p class="number">Lectura sin recortes</p>
+            <h3>Amplía el texto hasta el 200 %</h3>
+            <p>
+              Solo cambia el ejemplo. Comprueba cómo se reorganizan el contenido
+              y el botón sin perder información. También puedes ampliar toda la
+              página con el zoom del navegador.
+            </p>
+            <label class="range-label" for="text-scale"
+              >Tamaño del texto
+              <output id="text-scale-value" for="text-scale"
+                >100 %</output
+              ></label
+            ><input
+              id="text-scale"
+              type="range"
+              min="100"
+              max="200"
+              step="25"
+              value="100"
+              aria-valuetext="100 por ciento"
+            /><button type="button" id="text-scale-reset">
+              Restablecer al 100 %
+            </button>
+          </div>
+          <div class="scalable-preview" id="scalable-preview">
+            <h4>Tu próxima consulta</h4>
+            <p>Consulta general, jueves a las 10:30 a. m.</p>
+            <p>
+              Revisa los datos antes de confirmar. Toda la información debe
+              seguir disponible cuando amplías el texto.
+            </p>
+            <button type="button" id="readable-confirm">
+              Confirmar lectura
+            </button>
+            <p id="text-scale-feedback" role="status" aria-live="polite"></p>
+          </div>
         </div>
       </section>
       <section id="adaptacion" class="demo-section">
@@ -458,6 +815,40 @@
           </div>
           <p id="touch-feedback" role="status" aria-live="polite">
             Selecciona una acción.
+          </p>
+        </div>
+      </section>
+      <section class="demo-section" id="haptica">
+        <div class="demo-text">
+          <span class="number">Retroalimentación multisensorial</span>
+          <h2>Una confirmación que se ve y puede sentirse</h2>
+          <p>
+            La respuesta háptica complementa la señal visual; nunca debe ser el
+            único aviso. Esta prueba usa la API de vibración web, no los motores
+            hápticos nativos de iOS y Android.
+          </p>
+          <p>
+            La disponibilidad depende del navegador, del equipo y de sus
+            preferencias. Incluso una solicitud aceptada no garantiza una
+            vibración perceptible.
+          </p>
+        </div>
+        <div class="haptic-tool">
+          <label class="haptic-option"
+            ><input type="checkbox" id="haptic-enabled" /> Solicitar vibración
+            al probar la confirmación</label
+          >
+          <div class="haptic-preview" id="haptic-preview">
+            <span id="haptic-symbol" aria-hidden="true">○</span
+            ><strong id="haptic-label">Esperando tu acción</strong>
+          </div>
+          <div class="experiment-actions">
+            <button type="button" id="haptic-test" class="primary-link">
+              Probar confirmación</button
+            ><button type="button" id="haptic-reset">Restablecer prueba</button>
+          </div>
+          <p id="haptic-feedback" role="status" aria-live="polite">
+            La señal visual funciona aunque el dispositivo no tenga vibración.
           </p>
         </div>
       </section>
