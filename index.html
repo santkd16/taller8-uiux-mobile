@@ -3,12 +3,23 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="theme-color" content="#F2F5FA" />
+    <meta name="theme-color" content="#111c30" />
     <meta
       name="description"
       content="Presentación dinámica del Taller 8 sobre diseño UI/UX móvil."
     />
     <title>Calibrar — Presentación de UI/UX móvil</title>
+    <script>
+      (() => {
+        let theme = "ink";
+        try {
+          const saved = localStorage.getItem("calibrar-appearance");
+          if (["ink", "graphite", "plum", "light"].includes(saved))
+            theme = saved;
+        } catch {}
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body class="presentation">
@@ -23,16 +34,14 @@
       >
       <div class="header-actions">
         <div class="preferences" aria-label="Preferencias de lectura">
-          <button
-            type="button"
-            class="utility-button"
-            id="theme-toggle"
-            aria-pressed="false"
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="12" cy="12" r="8" />
-              <path d="M12 4v16M12 4a8 8 0 0 1 0 16Z" /></svg
-            ><span>Tema oscuro</span></button
+          <label class="theme-choice" for="theme-select"
+            ><span>Apariencia</span
+            ><select id="theme-select">
+              <option value="ink">Azul tinta</option>
+              <option value="graphite">Grafito</option>
+              <option value="plum">Ciruela</option>
+              <option value="light">Claro</option>
+            </select></label
           ><button
             type="button"
             class="utility-button"

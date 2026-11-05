@@ -1,8 +1,7 @@
 "use strict";
 
-// Preferencias compartidas: el sistema aporta el valor inicial.
+// La nueva apariencia comienza en azul tinta y conserva la selección explícita.
 const root = document.documentElement;
-const scheme = window.matchMedia("(prefers-color-scheme: dark)");
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const preference = {
   read(key) {
@@ -16,30 +15,30 @@ const preference = {
     try {
       localStorage.setItem(key, value);
     } catch {
-      /* La interfaz funciona sin almacenamiento. */
+      /* Se puede usar sin almacenamiento. */
     }
   },
 };
-const savedTheme = preference.read("calibrar-theme");
-if (["light", "dark"].includes(savedTheme)) root.dataset.theme = savedTheme;
-function isDark() {
-  return root.dataset.theme ? root.dataset.theme === "dark" : scheme.matches;
-}
-function updateThemeControl() {
-  document
-    .getElementById("theme-toggle")
-    ?.setAttribute("aria-pressed", String(isDark()));
+const themes = {
+  ink: "#111c30",
+  graphite: "#202127",
+  plum: "#282039",
+  light: "#f2f5fa",
+};
+function applyTheme(theme) {
+  const selected = Object.hasOwn(themes, theme) ? theme : "ink";
+  root.dataset.theme = selected;
+  const select = document.getElementById("theme-select");
+  if (select) select.value = selected;
   document
     .querySelector('meta[name="theme-color"]')
-    ?.setAttribute("content", isDark() ? "#19263b" : "#f2f5fa");
+    ?.setAttribute("content", themes[selected]);
 }
-document.getElementById("theme-toggle")?.addEventListener("click", () => {
-  root.dataset.theme = isDark() ? "light" : "dark";
-  preference.write("calibrar-theme", root.dataset.theme);
-  updateThemeControl();
+applyTheme(preference.read("calibrar-appearance"));
+document.getElementById("theme-select")?.addEventListener("change", (event) => {
+  applyTheme(event.target.value);
+  preference.write("calibrar-appearance", event.target.value);
 });
-scheme.addEventListener("change", updateThemeControl);
-updateThemeControl();
 function updateMotionControl() {
   const reduced =
     reducedMotion.matches || preference.read("calibrar-motion") === "reduced";
@@ -187,6 +186,9 @@ if (slides.length) {
     },
     { passive: true },
   );
+  stage.addEventListener("touchcancel", () => {
+    touchStart = null;
+  });
   const exposure = document.getElementById("fullscreen-slide");
   function setExposure(active) {
     document.body.classList.toggle("exposure-mode", active);
@@ -196,7 +198,14 @@ if (slides.length) {
   exposure.addEventListener("click", async () => {
     if (document.body.classList.contains("exposure-mode")) {
       setExposure(false);
-      if (document.fullscreenElement) await document.exitFullscreen();
+      if (document.fullscreenElement) {
+        try {
+          await document.exitFullscreen();
+        } catch {
+          document.getElementById("presentation-notice").textContent =
+            "Usa Esc para salir de pantalla completa.";
+        }
+      }
     } else {
       setExposure(true);
       try {
@@ -269,6 +278,7 @@ function setDemoState(state) {
     button.setAttribute("aria-pressed", String(button.dataset.state === state));
     button.classList.toggle("active", button.dataset.state === state);
   });
+  document.querySelector(".state-card").dataset.currentState = state;
   const [icon, title, message, action] = states[state];
   document.getElementById("state-icon").textContent = icon;
   document.getElementById("state-title").textContent = title;
@@ -302,9 +312,22 @@ if (document.getElementById("state-action")) {
     }
   });
 }
+const appointmentDialog = document.getElementById("appointment-dialog");
 document.getElementById("appointment-btn")?.addEventListener("click", () => {
-  document.getElementById("appointment-feedback").textContent =
-    "Siguiente paso: revisar y confirmar la cita.";
+  appointmentDialog.returnValue = "";
+  appointmentDialog.showModal();
+});
+appointmentDialog?.addEventListener("close", () => {
+  const confirmed = appointmentDialog.returnValue === "confirm";
+  document.getElementById("appointment-feedback").textContent = confirmed
+    ? "Cita confirmada en esta demostración. No se realizó una reserva real."
+    : "Puedes revisar los datos antes de confirmar.";
+  document.getElementById("appointment-step").textContent = confirmed
+    ? "Paso 2 de 2: confirmado en la demo"
+    : "Paso 1 de 2";
+  document.getElementById("appointment-btn").textContent = confirmed
+    ? "Revisar cita de prueba"
+    : "Continuar";
 });
 const criteria = [
   ...document.querySelectorAll('.check-card input[type="checkbox"]'),
@@ -334,6 +357,7 @@ validationForm?.addEventListener("submit", (event) => {
   const feedback = document.getElementById("form-feedback");
   const invalidName = !name.value.trim();
   const invalidEmail = !email.value.trim() || !email.validity.valid;
+  validationForm.dataset.complete = String(!invalidName && !invalidEmail);
   name.setAttribute("aria-invalid", String(invalidName));
   email.setAttribute("aria-invalid", String(invalidEmail));
   if (invalidName) {
@@ -347,13 +371,12 @@ validationForm?.addEventListener("submit", (event) => {
     feedback.textContent =
       "Datos válidos. Recordatorio guardado solo en esta demostración.";
 });
-validationForm
-  ?.querySelectorAll("input")
-  .forEach((input) =>
-    input.addEventListener("input", () =>
-      input.removeAttribute("aria-invalid"),
-    ),
-  );
+validationForm?.querySelectorAll("input").forEach((input) =>
+  input.addEventListener("input", () => {
+    input.removeAttribute("aria-invalid");
+    validationForm.dataset.complete = "false";
+  }),
+);
 const syncMessages = {
   pending: [
     "Pendiente de sincronización",
@@ -368,24 +391,138 @@ const syncMessages = {
     "Los datos locales y remotos difieren. Revisa antes de sobrescribir.",
   ],
 };
-document.querySelectorAll("[data-sync]").forEach((button) =>
-  button.addEventListener("click", () => {
-    const [title, description] = syncMessages[button.dataset.sync];
-    document.querySelector("#sync-status b").textContent = title;
-    document.querySelector("#sync-status small").textContent = description;
-  }),
-);
+function showSync(state) {
+  const [title, description] = syncMessages[state];
+  document.querySelector("#sync-status b").textContent = title;
+  document.querySelector("#sync-status small").textContent = description;
+  document.getElementById("resolve-conflict").hidden = state !== "conflict";
+  document
+    .querySelectorAll("[data-sync]")
+    .forEach((button) =>
+      button.setAttribute(
+        "aria-pressed",
+        String(button.dataset.sync === state),
+      ),
+    );
+}
+document.querySelectorAll("[data-sync]").forEach((button) => {
+  button.setAttribute("aria-pressed", "false");
+  button.addEventListener("click", () => showSync(button.dataset.sync));
+});
+document.getElementById("resolve-conflict")?.addEventListener("click", () => {
+  showSync("pending");
+  document.querySelector("#sync-status small").textContent =
+    "Versión local elegida en la simulación. Pendiente de confirmación del servidor.";
+  document.querySelector('[data-sync="pending"]').focus();
+});
 document.querySelectorAll("[data-touch]").forEach((button) =>
-  button.addEventListener("click", () => {
+  button.addEventListener("click", async () => {
+    const feedback = document.getElementById("touch-feedback");
     if (button.dataset.touch === "favorito") {
       const selected = button.getAttribute("aria-pressed") !== "true";
       button.setAttribute("aria-pressed", String(selected));
+      button.setAttribute(
+        "aria-label",
+        selected ? "Retirar cita de favoritos" : "Añadir cita a favoritos",
+      );
       button.textContent = selected ? "★" : "☆";
-      document.getElementById("touch-feedback").textContent = selected
+      feedback.textContent = selected
         ? "Cita añadida a favoritos en esta demo."
         : "Cita retirada de favoritos en esta demo.";
-    } else
-      document.getElementById("touch-feedback").textContent =
-        `Acción de ejemplo seleccionada: ${button.dataset.touch}.`;
+    } else if (button.dataset.touch === "información") {
+      document.getElementById("info-dialog").showModal();
+    } else {
+      const url = new URL("ejemplos.html#toque", location.href).href;
+      try {
+        if (navigator.share) {
+          await navigator.share({
+            title: "Calibrar: ejemplo de áreas táctiles",
+            url,
+          });
+          feedback.textContent =
+            "Se abrió la opción de compartir del dispositivo.";
+        } else if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(url);
+          feedback.textContent =
+            "Enlace del ejemplo copiado. Puedes pegarlo para compartir.";
+        } else throw new Error("Se requiere copia manual");
+      } catch (error) {
+        if (error.name === "AbortError") {
+          feedback.textContent = "Compartir cancelado.";
+          return;
+        }
+        const input = document.getElementById("share-link");
+        input.value = url;
+        document.getElementById("share-dialog").showModal();
+        input.focus();
+        input.select();
+      }
+    }
   }),
 );
+
+// Los destinos que se dibujan en el teléfono también responden a la persona.
+const demoPhone = document.getElementById("platform-phone");
+if (demoPhone) {
+  const nav = demoPhone.querySelector(".phone-nav");
+  nav.setAttribute("role", "group");
+  nav.setAttribute("aria-label", "Pantallas del teléfono de ejemplo");
+  const home = demoPhone.querySelector(".phone-content");
+  const panel = document.createElement("div");
+  panel.className = "phone-tab-panel";
+  panel.hidden = true;
+  panel.id = "phone-destination";
+  demoPhone.insertBefore(panel, nav);
+  const destinations = {
+    Inicio: null,
+    Agenda: [
+      "Tu agenda",
+      "Consulta general. Jueves, 12 de noviembre, a las 10:30 a. m.",
+    ],
+    Perfil: [
+      "Perfil de prueba",
+      "Alex. Estos datos son ficticios y se usan para demostrar la navegación.",
+    ],
+  };
+  nav.replaceChildren();
+  Object.entries(destinations).forEach(([name, content]) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = name;
+    button.setAttribute("aria-pressed", String(name === "Inicio"));
+    button.addEventListener("click", () => {
+      nav
+        .querySelectorAll("button")
+        .forEach((item) =>
+          item.setAttribute("aria-pressed", String(item === button)),
+        );
+      home.hidden = Boolean(content);
+      panel.hidden = !content;
+      if (content) {
+        const title = document.createElement("h3");
+        const description = document.createElement("p");
+        title.textContent = content[0];
+        description.textContent = content[1];
+        panel.replaceChildren(title, description);
+      }
+    });
+    nav.append(button);
+  });
+}
+const labSections = [...document.querySelectorAll(".demo-section")];
+if (labSections.length && "IntersectionObserver" in window) {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        document.querySelectorAll(".lab-index a").forEach((link) => {
+          if (link.hash === `#${entry.target.id}`)
+            link.setAttribute("aria-current", "true");
+          else link.removeAttribute("aria-current");
+        });
+      });
+    },
+    { rootMargin: "-10% 0px -55% 0px", threshold: 0 },
+  );
+  labSections.forEach((section) => observer.observe(section));
+}
