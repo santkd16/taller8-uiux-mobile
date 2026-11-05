@@ -1,18 +1,543 @@
 <!doctype html>
-<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#101d31"><meta name="description" content="Presentación dinámica del Taller 8 sobre diseño UI/UX móvil."><title>Presentación UI/UX móvil · Taller 8</title><link rel="stylesheet" href="styles.css"></head>
-<body class="presentation">
-<a class="skip-link" href="#slide-stage">Ir a la presentación</a>
-<header class="presentation-header"><a class="dash-logo" href="index.html" aria-label="Inicio de presentación">UX<span>●</span>LAB</a><span class="presentation-course">ACTIVIDAD EVALUABLE 08 · MOBILE CLOUD COMPUTING</span><a class="presentation-demo" href="ejemplos.html">Laboratorio de ejemplos ↗</a></header>
-<main id="slide-stage" class="slide-stage" tabindex="-1" aria-label="Presentación del Taller 8">
-<section class="slide active" data-title="Portada" aria-labelledby="slide-1-title"><div class="slide-content cover"><div><p class="slide-kicker">DISEÑO DE INTERFACES MÓVILES · UI/UX</p><h1 id="slide-1-title">Diseñar para <em>personas.</em><br>Responder al <em>contexto.</em></h1><p class="slide-lead">Cinco principios para crear experiencias móviles comprensibles, accesibles y adaptables.</p><div class="cover-actions"><button type="button" class="slide-cta" data-next>Comenzar presentación <span>→</span></button><a href="ejemplos.html">Explorar ejemplos ↗</a></div></div><div class="cover-art" aria-hidden="true"><div class="art-ring"></div><div class="art-device"><span>9:41</span><div class="art-line"></div><div class="art-line short"></div><div class="art-tile"></div><div class="art-button"></div></div><span class="art-star">✳</span></div><div class="cover-author"><span>DAVID SANTIAGO PIEDRAHITA CABEZAS</span><span>INGENIERÍA DE SISTEMAS</span><span>15–20 MIN + PREGUNTAS</span></div></div></section>
-<section class="slide" data-title="Propósito" aria-labelledby="slide-2-title"><div class="slide-content"><p class="slide-kicker">01 / PUNTO DE PARTIDA</p><h2 id="slide-2-title">Una interfaz funciona cuando la persona <em>entiende y actúa.</em></h2><div class="principle-grid"><div><span>UI</span><h3>Lo que se ve y se toca</h3><p>Controles, tipografía, colores, formularios y navegación.</p></div><div><span>UX</span><h3>Lo que se vive</h3><p>Aprender, completar una tarea, recuperarse de errores y confiar en el resultado.</p></div></div><p class="slide-takeaway">Pregunta guía: ¿puede alguien completar la tarea sin recibir instrucciones?</p></div></section>
-<section class="slide" data-title="Plataformas" aria-labelledby="slide-3-title"><div class="slide-content"><p class="slide-kicker">02 / PAUTAS DE PLATAFORMA</p><h2 id="slide-3-title">Consistencia con el sistema. <em>Claridad para la tarea.</em></h2><div class="platform-grid"><article><div class="platform-icon apple">◉</div><h3>Apple HIG</h3><p>Tab bars, controles familiares de iOS, áreas seguras y texto dinámico.</p></article><article><div class="platform-icon material">◆</div><h3>Material Design 3</h3><p>NavigationBar o NavigationRail, componentes y tokens visuales coherentes.</p></article></div><p class="slide-takeaway">Las guías orientan decisiones; las pruebas con personas comprueban el resultado.</p></div></section>
-<section class="slide" data-title="Personas" aria-labelledby="slide-4-title"><div class="slide-content"><p class="slide-kicker">03 / DISEÑO CENTRADO EN LA PERSONA</p><h2 id="slide-4-title">Priorizar lo importante en una pantalla <em>pequeña.</em></h2><div class="steps"><div><b>01</b><h3>Comprender</h3><p>Tarea, contexto, atención y uso con una mano.</p></div><div><b>02</b><h3>Organizar</h3><p>Título, datos esenciales y acción principal en una jerarquía clara.</p></div><div><b>03</b><h3>Responder</h3><p>Confirmar la acción con señales visibles y, cuando aporte valor, hápticas.</p></div></div><p class="slide-takeaway">La zona del pulgar cambia según la mano, el agarre y el dispositivo.</p></div></section>
-<section class="slide" data-title="Estados" aria-labelledby="slide-5-title"><div class="slide-content"><p class="slide-kicker">04 / ESTADOS DE INTERFAZ</p><h2 id="slide-5-title">El sistema siempre debe explicar <em>qué ocurre.</em></h2><div class="state-map"><div><span>◌</span><b>Carga</b><small>Esperar con contexto</small></div><div><span>＋</span><b>Vacío</b><small>Indicar siguiente paso</small></div><div><span>!</span><b>Error</b><small>Ofrecer recuperación</small></div><div><span>⌁</span><b>Sin conexión</b><small>Distinguir datos locales</small></div><div><span>✓</span><b>Éxito</b><small>Confirmar resultado</small></div></div><p class="slide-takeaway">Mostrar “sin conexión” no significa que exista sincronización offline.</p></div></section>
-<section class="slide" data-title="Accesibilidad" aria-labelledby="slide-6-title"><div class="slide-content"><p class="slide-kicker">05 / ACCESIBILIDAD</p><h2 id="slide-6-title">Diseñar para más formas de <em>percibir y actuar.</em></h2><div class="access-grid"><div><strong>4,5:1</strong><span>Contraste mínimo para texto normal en WCAG AA, con excepciones.</span></div><div><strong>48 dp</strong><span>Área táctil recomendada en Android.</span></div><div><strong>44 pt</strong><span>Área táctil recomendada en iOS.</span></div></div><p class="slide-takeaway">Verificar etiquetas y orden con TalkBack o VoiceOver, ampliar texto y probar controles reales.</p></div></section>
-<section class="slide" data-title="Adaptación" aria-labelledby="slide-7-title"><div class="slide-content"><p class="slide-kicker">06 / ADAPTACIÓN Y MICROINTERACCIONES</p><h2 id="slide-7-title">La tarea permanece clara aunque <em>cambie la pantalla.</em></h2><div class="adaptive-illustration"><div class="compact-diagram"><span>ÁREA COMPACTA</span><i></i><i></i><i></i><b>● ● ●</b></div><span class="adaptive-arrow">→</span><div class="wide-diagram"><span>ÁREA AMPLIA</span><div><b>●<br>●<br>●</b><i></i><i></i></div></div></div><p class="slide-takeaway">Reorganizar por espacio disponible; animar solo para explicar cambios y respetar movimiento reducido.</p></div></section>
-<section class="slide" data-title="Conclusiones" aria-labelledby="slide-8-title"><div class="slide-content"><p class="slide-kicker">07 / CONCLUSIONES</p><h2 id="slide-8-title">Una experiencia de calidad une <em>diseño, comportamiento y evidencia.</em></h2><div class="conclusion-points"><p><b>01</b> Las pautas aportan consistencia, pero no reemplazan la investigación.</p><p><b>02</b> Los estados reducen incertidumbre y facilitan la recuperación.</p><p><b>03</b> La accesibilidad y la adaptación se comprueban en contexto.</p></div><p class="slide-takeaway">Siguiente paso: llevar estos criterios al prototipo y evaluarlos con tareas reales.</p></div></section>
-<section class="slide" data-title="Cierre" aria-labelledby="slide-9-title"><div class="slide-content closing"><p class="slide-kicker">FIN DE LA PRESENTACIÓN · PREGUNTAS</p><h2 id="slide-9-title">¿Cómo se siente una app cuando <em>sí te entiende?</em></h2><p>Exploremos las decisiones de diseño en el laboratorio interactivo.</p><div class="cover-actions"><a class="slide-cta" href="ejemplos.html">Abrir ejemplos <span>↗</span></a><a href="documentos/informe-uiux-editable.docx" download>Descargar investigación ↧</a></div><div class="closing-sources"><a href="https://developer.apple.com/design/human-interface-guidelines/">Apple HIG</a><a href="https://developer.android.com/develop/ui/compose/designsystems/material3">Material 3</a><a href="https://www.w3.org/TR/WCAG22/">WCAG 2.2</a><a href="https://docs.flutter.dev/ui/adaptive-responsive/general">Flutter Adaptativo</a></div></div></section>
-</main>
-<footer class="presentation-controls"><div class="control-group"><button id="prev-slide" type="button" aria-label="Diapositiva anterior">←</button><button id="next-slide" type="button" aria-label="Diapositiva siguiente">→</button><span id="slide-counter" aria-live="polite">01 / 09</span></div><div class="progress-track" role="progressbar" aria-label="Progreso de la presentación" aria-valuemin="1" aria-valuemax="9" aria-valuenow="1"><span id="progress-fill"></span></div><div class="control-group"><span id="slide-label">Portada</span><button id="fullscreen-slide" type="button" aria-label="Pantalla completa" title="Pantalla completa">⛶</button></div></footer>
-<script src="script.js"></script></body></html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#F2F5FA" />
+    <meta
+      name="description"
+      content="Presentación dinámica del Taller 8 sobre diseño UI/UX móvil."
+    />
+    <title>Calibrar — Presentación de UI/UX móvil</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="presentation">
+    <a class="skip-link" href="#slide-stage">Ir a la presentación</a>
+    <header class="presentation-header">
+      <a class="brand" href="index.html" aria-label="Calibrar, presentación"
+        ><svg viewBox="0 0 32 32" aria-hidden="true">
+          <path
+            d="M4 12V4h8M20 4h8v8M28 20v8h-8M12 28H4v-8M10 16h12M16 10v12"
+          /></svg
+        >Calibrar<span>UI/UX móvil</span></a
+      >
+      <div class="header-actions">
+        <div class="preferences" aria-label="Preferencias de lectura">
+          <button
+            type="button"
+            class="utility-button"
+            id="theme-toggle"
+            aria-pressed="false"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="8" />
+              <path d="M12 4v16M12 4a8 8 0 0 1 0 16Z" /></svg
+            ><span>Tema oscuro</span></button
+          ><button
+            type="button"
+            class="utility-button"
+            id="motion-toggle"
+            aria-pressed="false"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 7h10M4 12h16M4 17h10" /></svg
+            ><span>Reducir movimiento</span>
+          </button>
+        </div>
+        <a class="header-link" href="ejemplos.html">Abrir laboratorio</a>
+      </div>
+    </header>
+    <main
+      id="slide-stage"
+      class="slide-stage"
+      tabindex="-1"
+      aria-label="Presentación del Taller 8"
+    >
+      <section
+        class="slide active"
+        data-title="Portada"
+        aria-labelledby="slide-1-title"
+      >
+        <div class="slide-content cover">
+          <div>
+            <p class="slide-kicker">Diseño de interfaces móviles / UI/UX</p>
+            <h1 id="slide-1-title">
+              Diseñar para personas.<br />Responder al contexto.
+            </h1>
+            <p class="slide-lead">
+              Cinco principios para crear experiencias móviles comprensibles,
+              accesibles y adaptables.
+            </p>
+            <div class="cover-actions">
+              <button type="button" class="slide-cta" data-next>
+                Comenzar presentación</button
+              ><a href="ejemplos.html">Explorar ejemplos</a>
+            </div>
+          </div>
+          <div class="calibration-rig">
+            <div class="rig-caption">
+              <span>Objeto de estudio</span><span>Interfaz móvil</span>
+            </div>
+            <div class="rig-object">
+              <span class="dimension dimension-height" aria-hidden="true"
+                >Área disponible</span
+              >
+              <div class="live-device" id="cover-device">
+                <div class="device-status">
+                  <span>9:41</span
+                  ><svg viewBox="0 0 28 14" aria-hidden="true">
+                    <path d="M2 10V7m5 3V4m5 6V1M18 3h7v8h-7z" />
+                  </svg>
+                </div>
+                <div class="device-screen">
+                  <span class="device-label">Tu agenda</span>
+                  <h2>Todo en <br />su lugar.</h2>
+                  <div class="device-appointment">
+                    <svg viewBox="0 0 32 32" aria-hidden="true">
+                      <rect x="5" y="7" width="22" height="21" rx="3" />
+                      <path d="M5 13h22M11 3v8M21 3v8m-11 9 4 4 7-8" />
+                    </svg>
+                    <div>
+                      <b>Consulta general</b><span>Jueves, 10:30 a. m.</span>
+                    </div>
+                  </div>
+                  <p class="device-message" role="status">
+                    Cita disponible para revisar.
+                  </p>
+                  <button
+                    type="button"
+                    class="device-confirm"
+                    id="cover-confirm"
+                  >
+                    Confirmar cita de prueba
+                  </button>
+                </div>
+                <div class="device-bottom" aria-hidden="true">
+                  <span class="selected">Inicio</span><span>Agenda</span
+                  ><span>Perfil</span>
+                </div>
+              </div>
+              <span class="rig-callout" aria-hidden="true"
+                >Acción<br />reconocible</span
+              >
+            </div>
+            <div
+              class="rig-controls"
+              role="group"
+              aria-label="Plataforma del teléfono de portada"
+            >
+              <button
+                type="button"
+                data-cover-platform="ios"
+                aria-pressed="true"
+              >
+                iOS</button
+              ><button
+                type="button"
+                data-cover-platform="android"
+                aria-pressed="false"
+              >
+                Android
+              </button>
+            </div>
+            <p class="rig-note">
+              Toca el botón del teléfono. Observa su respuesta.
+            </p>
+          </div>
+          <div class="cover-author">
+            <span>David Santiago Piedrahita Cabezas</span
+            ><span>Ingeniería de Sistemas</span
+            ><span>Mobile Cloud Computing, Actividad evaluable 08</span
+            ><span>15–20 minutos y preguntas</span>
+          </div>
+        </div>
+      </section>
+      <section
+        class="slide"
+        data-title="Propósito"
+        aria-labelledby="slide-2-title"
+      >
+        <div class="slide-content">
+          <p class="slide-kicker">Punto de partida</p>
+          <h2 id="slide-2-title">
+            Una interfaz funciona cuando la persona entiende y actúa.
+          </h2>
+          <div class="principle-grid">
+            <div>
+              <span>UI</span>
+              <h3>Lo que se ve y se toca</h3>
+              <p>Controles, tipografía, colores, formularios y navegación.</p>
+            </div>
+            <div>
+              <span>UX</span>
+              <h3>Lo que se vive</h3>
+              <p>
+                Aprender, completar una tarea, recuperarse de errores y confiar
+                en el resultado.
+              </p>
+            </div>
+          </div>
+          <p class="slide-takeaway">
+            Pregunta guía: ¿puede alguien completar la tarea sin recibir
+            instrucciones?
+          </p>
+        </div>
+      </section>
+      <section
+        class="slide"
+        data-title="Plataformas"
+        aria-labelledby="slide-3-title"
+      >
+        <div class="slide-content">
+          <div class="axis-marker">
+            <svg
+              class="axis-illustration"
+              viewBox="0 0 240 160"
+              aria-hidden="true"
+              fill="none"
+            >
+              <rect x="46" y="12" width="65" height="133" rx="13" />
+              <rect x="130" y="12" width="65" height="133" rx="4" />
+              <path
+                d="M56 110h45M140 110h45M59 123h10m9 0h10m53 0h10m9 0h10M62 35h32M146 35h32M62 48h24M146 48h24"
+              />
+              <rect
+                class="svg-fill"
+                x="60"
+                y="64"
+                width="36"
+                height="30"
+                rx="3"
+              />
+              <rect
+                class="svg-fill"
+                x="144"
+                y="64"
+                width="36"
+                height="30"
+                rx="10"
+              />
+            </svg>
+          </div>
+          <p class="slide-kicker">Pautas de plataforma</p>
+          <h2 id="slide-3-title">
+            Consistencia con el sistema. Claridad para la tarea.
+          </h2>
+          <div class="platform-grid">
+            <article>
+              <div class="platform-icon apple">◉</div>
+              <h3>Apple HIG</h3>
+              <p>
+                Tab bars, controles familiares de iOS, áreas seguras y texto
+                dinámico.
+              </p>
+            </article>
+            <article>
+              <div class="platform-icon material">◆</div>
+              <h3>Material Design 3</h3>
+              <p>
+                NavigationBar o NavigationRail, componentes y tokens visuales
+                coherentes.
+              </p>
+            </article>
+          </div>
+          <p class="slide-takeaway">
+            Las guías orientan decisiones; las pruebas con personas comprueban
+            el resultado.
+          </p>
+        </div>
+      </section>
+      <section
+        class="slide"
+        data-title="Personas"
+        aria-labelledby="slide-4-title"
+      >
+        <div class="slide-content">
+          <div class="axis-marker">
+            <svg
+              class="axis-illustration"
+              viewBox="0 0 240 160"
+              aria-hidden="true"
+              fill="none"
+            >
+              <rect x="75" y="8" width="82" height="143" rx="14" />
+              <path class="svg-fill" d="M83 140V80Q136 72 149 139Z" />
+              <path
+                d="M39 118q20-26 47-25m-38 26q18-19 37-18M95 30h40M95 42h28M95 58h40M96 125h39"
+              />
+              <circle cx="113" cy="119" r="22" stroke-dasharray="4 5" />
+            </svg>
+          </div>
+          <p class="slide-kicker">Diseño centrado en la persona</p>
+          <h2 id="slide-4-title">
+            Priorizar lo importante en una pantalla pequeña.
+          </h2>
+          <div class="steps">
+            <div>
+              <b>01</b>
+              <h3>Comprender</h3>
+              <p>Tarea, contexto, atención y uso con una mano.</p>
+            </div>
+            <div>
+              <b>02</b>
+              <h3>Organizar</h3>
+              <p>
+                Título, datos esenciales y acción principal en una jerarquía
+                clara.
+              </p>
+            </div>
+            <div>
+              <b>03</b>
+              <h3>Responder</h3>
+              <p>
+                Confirmar la acción con señales visibles y, cuando aporte valor,
+                hápticas.
+              </p>
+            </div>
+          </div>
+          <p class="slide-takeaway">
+            La zona del pulgar cambia según la mano, el agarre y el dispositivo.
+          </p>
+        </div>
+      </section>
+      <section
+        class="slide"
+        data-title="Estados"
+        aria-labelledby="slide-5-title"
+      >
+        <div class="slide-content">
+          <div class="axis-marker">
+            <svg
+              class="axis-illustration"
+              viewBox="0 0 240 160"
+              aria-hidden="true"
+              fill="none"
+            >
+              <path d="M35 80h170" stroke-dasharray="4 5" />
+              <circle cx="35" cy="80" r="21" />
+              <path d="M28 80a7 7 0 1 1 7 7" />
+              <rect x="97" y="58" width="44" height="44" rx="5" />
+              <path d="M119 69v12m0 7v1" />
+              <circle class="svg-fill" cx="204" cy="80" r="21" />
+              <path d="m193 80 7 7 13-15" />
+            </svg>
+          </div>
+          <p class="slide-kicker">Estados de interfaz</p>
+          <h2 id="slide-5-title">
+            El sistema siempre debe explicar qué ocurre.
+          </h2>
+          <div class="state-map">
+            <div>
+              <span>◌</span><b>Carga</b><small>Esperar con contexto</small>
+            </div>
+            <div>
+              <span>＋</span><b>Vacío</b><small>Indicar siguiente paso</small>
+            </div>
+            <div>
+              <span>!</span><b>Error</b><small>Ofrecer recuperación</small>
+            </div>
+            <div>
+              <span>⌁</span><b>Sin conexión</b
+              ><small>Distinguir datos locales</small>
+            </div>
+            <div>
+              <span>✓</span><b>Éxito</b><small>Confirmar resultado</small>
+            </div>
+          </div>
+          <p class="slide-takeaway">
+            Mostrar “sin conexión” no significa que exista sincronización
+            offline.
+          </p>
+        </div>
+      </section>
+      <section
+        class="slide"
+        data-title="Accesibilidad"
+        aria-labelledby="slide-6-title"
+      >
+        <div class="slide-content">
+          <div class="axis-marker">
+            <svg
+              class="axis-illustration"
+              viewBox="0 0 240 160"
+              aria-hidden="true"
+              fill="none"
+            >
+              <path d="M32 32h78v96H32zM130 32h78v96h-78" />
+              <path
+                d="m46 106 25-58 25 58M54 86h35M144 106l25-58 25 58M152 86h35"
+              />
+              <path d="M122 24v112" stroke-dasharray="4 5" />
+              <path d="M25 18h90M25 14v8m90-8v8M134 141h68m-68-4v8m68-8v8" />
+            </svg>
+          </div>
+          <p class="slide-kicker">Accesibilidad</p>
+          <h2 id="slide-6-title">
+            Diseñar para más formas de percibir y actuar.
+          </h2>
+          <div class="access-grid">
+            <div>
+              <strong>4,5:1</strong
+              ><span
+                >Contraste mínimo para texto normal en WCAG AA, con
+                excepciones.</span
+              >
+            </div>
+            <div>
+              <strong>48 dp</strong
+              ><span>Área táctil recomendada en Android.</span>
+            </div>
+            <div>
+              <strong>44 pt</strong><span>Área táctil recomendada en iOS.</span>
+            </div>
+          </div>
+          <p class="slide-takeaway">
+            Verificar etiquetas y orden con TalkBack o VoiceOver, ampliar texto
+            y probar controles reales.
+          </p>
+        </div>
+      </section>
+      <section
+        class="slide"
+        data-title="Adaptación"
+        aria-labelledby="slide-7-title"
+      >
+        <div class="slide-content">
+          <div class="axis-marker">
+            <svg
+              class="axis-illustration"
+              viewBox="0 0 240 160"
+              aria-hidden="true"
+              fill="none"
+            >
+              <rect x="12" y="30" width="60" height="108" rx="9" />
+              <rect x="94" y="30" width="132" height="108" rx="5" />
+              <path
+                d="M22 49h40M22 62h29M22 121h40M111 45v77M123 49h85M123 65h85M123 81h85"
+              />
+              <path d="M12 17h214m-214-4v8m214-8v8" stroke-dasharray="4 4" />
+            </svg>
+          </div>
+          <p class="slide-kicker">Adaptación y microinteracciones</p>
+          <h2 id="slide-7-title">
+            La tarea permanece clara aunque cambie la pantalla.
+          </h2>
+          <div class="adaptive-illustration">
+            <div class="compact-diagram">
+              <span>Área compacta</span><i></i><i></i><i></i><b>● ● ●</b>
+            </div>
+            <span class="adaptive-arrow">→</span>
+            <div class="wide-diagram">
+              <span>Área amplia</span>
+              <div>
+                <b>●<br />●<br />●</b><i></i><i></i>
+              </div>
+            </div>
+          </div>
+          <p class="slide-takeaway">
+            Reorganizar por espacio disponible; animar solo para explicar
+            cambios y respetar movimiento reducido.
+          </p>
+        </div>
+      </section>
+      <section
+        class="slide"
+        data-title="Conclusiones"
+        aria-labelledby="slide-8-title"
+      >
+        <div class="slide-content">
+          <p class="slide-kicker">Conclusiones</p>
+          <h2 id="slide-8-title">
+            Una experiencia de calidad une diseño, comportamiento y evidencia.
+          </h2>
+          <div class="conclusion-points">
+            <p>
+              <b>01</b> Las pautas aportan consistencia, pero no reemplazan la
+              investigación.
+            </p>
+            <p>
+              <b>02</b> Los estados reducen incertidumbre y facilitan la
+              recuperación.
+            </p>
+            <p>
+              <b>03</b> La accesibilidad y la adaptación se comprueban en
+              contexto.
+            </p>
+          </div>
+          <p class="slide-takeaway">
+            Siguiente paso: llevar estos criterios al prototipo y evaluarlos con
+            tareas reales.
+          </p>
+        </div>
+      </section>
+      <section
+        class="slide"
+        data-title="Cierre"
+        aria-labelledby="slide-9-title"
+      >
+        <div class="slide-content closing">
+          <p class="slide-kicker">Fin de la presentación / preguntas</p>
+          <h2 id="slide-9-title">
+            ¿Cómo se siente una app cuando sí te entiende?
+          </h2>
+          <p>
+            Exploremos las decisiones de diseño en el laboratorio interactivo.
+          </p>
+          <div class="cover-actions">
+            <a class="slide-cta" href="ejemplos.html">Abrir laboratorio</a
+            ><a href="documentos/informe-uiux-editable.docx" download
+              >Descargar investigación</a
+            >
+          </div>
+          <div class="closing-sources">
+            <a
+              href="https://developer.apple.com/design/human-interface-guidelines/"
+              >Apple HIG</a
+            ><a
+              href="https://developer.android.com/develop/ui/compose/designsystems/material3"
+              >Material 3</a
+            ><a href="https://www.w3.org/TR/WCAG22/">WCAG 2.2</a
+            ><a href="https://docs.flutter.dev/ui/adaptive-responsive/general"
+              >Flutter Adaptativo</a
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="presentation-controls">
+      <div class="slide-location">
+        <span id="slide-counter" aria-live="polite">01 / 09</span
+        ><span id="slide-label">Portada</span>
+      </div>
+      <label class="jump-label" for="slide-jump"
+        >Ir a tema<select id="slide-jump"></select
+      ></label>
+      <div class="presentation-progress">
+        <div
+          class="progress-track"
+          role="progressbar"
+          aria-label="Progreso de la presentación"
+          aria-valuemin="1"
+          aria-valuemax="9"
+          aria-valuenow="1"
+        >
+          <span id="progress-fill"></span>
+        </div>
+        <span class="keyboard-hint"
+          >Teclado: ← anterior / → siguiente / Esc salir</span
+        ><span class="gesture-hint"
+          >Desliza la diapositiva o usa los botones.</span
+        >
+      </div>
+      <div class="slide-buttons">
+        <button id="prev-slide" type="button">Anterior</button
+        ><button id="next-slide" type="button">Siguiente</button
+        ><button id="fullscreen-slide" type="button" aria-pressed="false">
+          Modo exposición
+        </button>
+      </div>
+      <p id="presentation-notice" class="sr-only" role="status"></p>
+    </footer>
+    <script src="script.js"></script>
+  </body>
+</html>

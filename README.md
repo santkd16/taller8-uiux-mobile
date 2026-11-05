@@ -1,11 +1,24 @@
-# Taller 8 · UI/UX móvil
+# Calibrar — Taller 8 de UI/UX móvil
 
-Sitio estático de apoyo a la sustentación de David Santiago Piedrahita Cabezas.
+Presentación y laboratorio de la Actividad Evaluable 08 de Mobile Cloud Computing, por David Santiago Piedrahita Cabezas, Ingeniería de Sistemas.
 
-- `index.html`: presentación dinámica de nueve diapositivas, con botones, teclado (flechas, AvPág/RePág, Inicio/Fin), progreso y pantalla completa.
-- `ejemplos.html`: laboratorio independiente con nueve grupos de ejemplos sobre plataformas, ergonomía, estados, accesibilidad, adaptación, validación, sincronización, áreas táctiles y casos de industria.
-- `documentos/`: guía original e informe editable con desarrollo y referencias IEEE.
+## Uso
 
-Abre `index.html` en un navegador o ejecuta `python3 -m http.server 8000`. No requiere instalación ni compilación. La presentación cubre los cinco ejes asignados y está organizada para una exposición de 15–20 minutos, más preguntas.
+Abre `index.html` en el navegador o ejecuta `python3 -m http.server 8000` desde esta carpeta. No requiere instalación ni compilación. GitHub Pages publica la rama `main` desde su raíz.
 
-Los ejemplos son prototipos educativos locales. No envían datos, no implementan sincronización offline real ni representan resultados de pruebas con usuarios. Para evaluar accesibilidad hay que comprobar la interfaz con dispositivos y tecnologías de asistencia reales.
+- `index.html`: nueve diapositivas para una exposición de 15–20 minutos y preguntas. Botones, selector de tema, flechas de teclado, AvPág/RePág, Inicio/Fin y deslizamiento táctil. El modo exposición permite pantalla completa; Esc permite salir.
+- `ejemplos.html`: conserva los nueve grupos de pruebas sobre plataformas, ergonomía, estados, accesibilidad, adaptación, validación, sincronización, áreas táctiles y aplicación en la industria.
+- `documentos/`: guía original e informe editable con el desarrollo y las referencias IEEE; se conservan sin modificar.
+- `styles.css` y `script.js`: sistema visual y comportamiento compartidos, sin bibliotecas externas. Google Fonts es el único recurso externo; hay fuentes de reserva.
+
+## Identidad e interacción
+
+La metáfora de un banco de calibración organiza la experiencia. Un teléfono interactivo muestra cambios de plataforma y confirmación; cinco SVG propios explican los ejes técnicos. Barlow Condensed se usa en titulares y Atkinson Hyperlegible en lectura y controles.
+
+El tema sigue inicialmente al sistema y puede cambiarse con el control visible. El movimiento respeta `prefers-reduced-motion` y puede reducirse manualmente. Las preferencias se conservan localmente si el navegador permite almacenamiento. La única animación inicial revela el teléfono; el resto de transiciones responde a acciones.
+
+Los ejemplos son prototipos educativos. No envían datos ni implementan sincronización offline real. La lista de criterios activados no certifica accesibilidad. TalkBack, VoiceOver y la lectura a distancia requieren validación con dispositivos y personas reales.
+
+## Verificación del rediseño
+
+Se comprobaron las nueve diapositivas y las pruebas interactivas con Chromium/Playwright, anchos de 360, 390, 768 y 1440 px, modos claro y oscuro, teclado y modo exposición a 1366 × 768. Se revisaron contraste de la paleta, dimensiones de controles, enlaces locales y sintaxis de JavaScript.

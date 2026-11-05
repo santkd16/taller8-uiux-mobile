@@ -1,10 +1,391 @@
-const platformButtons=document.querySelectorAll('[data-platform]');platformButtons.forEach(button=>button.addEventListener('click',()=>{platformButtons.forEach(item=>{item.classList.toggle('active',item===button);item.setAttribute('aria-pressed',String(item===button))});document.getElementById('platform-phone').classList.toggle('material',button.dataset.platform==='android')}));
-const states={loading:['◌','Cargando citas','Estamos consultando la información. Espera un momento.','Esperar'],empty:['＋','Aún no hay citas','Cuando agendes una cita aparecerá aquí.','Agendar cita'],error:['!','No pudimos cargar las citas','Comprueba la conexión y vuelve a intentarlo.','Reintentar'],offline:['⌁','Sin conexión','Puedes consultar los datos locales de ejemplo; no hay sincronización activa.','Ver datos locales'],success:['✓','Consulta completada','Tus citas están actualizadas.','Ver citas']};document.querySelectorAll('[data-state]').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('[data-state]').forEach(item=>{item.classList.toggle('active',item===button);item.setAttribute('aria-pressed',String(item===button))});const [icon,title,message,action]=states[button.dataset.state];document.getElementById('state-icon').textContent=icon;document.getElementById('state-title').textContent=title;document.getElementById('state-message').textContent=message;document.getElementById('state-action').textContent=action}));document.getElementById('state-action')?.addEventListener('click',()=>{document.getElementById('state-message').textContent='Acción de ejemplo: en una app real se abriría la pantalla correspondiente.'});document.getElementById('appointment-btn')?.addEventListener('click',()=>{document.getElementById('appointment-feedback').textContent='Siguiente paso: revisar y confirmar la cita.'});
+"use strict";
 
-// Navegación accesible de la presentación; el laboratorio se mantiene independiente.
-const slides=[...document.querySelectorAll('.presentation .slide')];
-if(slides.length){let current=0;const counter=document.getElementById('slide-counter'),label=document.getElementById('slide-label'),progress=document.querySelector('.progress-track'),fill=document.getElementById('progress-fill'),prev=document.getElementById('prev-slide'),next=document.getElementById('next-slide');const jump=document.createElement('select');jump.id='slide-jump';jump.setAttribute('aria-label','Ir a un tema de la presentación');slides.forEach((slide,i)=>jump.add(new Option(String(i+1).padStart(2,'0')+' · '+slide.dataset.title,String(i))));document.querySelector('.presentation-controls').insertBefore(jump,progress);jump.addEventListener('change',()=>showSlide(Number(jump.value)));function showSlide(index){const moveFocus=slides.some(slide=>slide.contains(document.activeElement));current=Math.max(0,Math.min(slides.length-1,index));slides.forEach((slide,i)=>{slide.classList.toggle('active',i===current);slide.setAttribute('aria-hidden',String(i!==current));slide.hidden=i!==current});jump.value=String(current);if(moveFocus){const heading=slides[current].querySelector('h1,h2');heading.tabIndex=-1;heading.focus({preventScroll:true})}counter.textContent=String(current+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');label.textContent=slides[current].dataset.title;progress.setAttribute('aria-valuenow',String(current+1));fill.style.width=((current+1)/slides.length*100)+'%';prev.disabled=current===0;next.disabled=current===slides.length-1;history.replaceState(null,'','#diapositiva-'+(current+1))}prev.addEventListener('click',()=>showSlide(current-1));next.addEventListener('click',()=>showSlide(current+1));document.querySelectorAll('[data-next]').forEach(button=>button.addEventListener('click',()=>showSlide(current+1)));document.addEventListener('keydown',event=>{if(['ArrowRight','PageDown',' '].includes(event.key)&&!['BUTTON','A','INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)){event.preventDefault();showSlide(current+1)}if(['ArrowLeft','PageUp'].includes(event.key)&&!['BUTTON','A','INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)){event.preventDefault();showSlide(current-1)}if(event.key==='Home')showSlide(0);if(event.key==='End')showSlide(slides.length-1)});document.getElementById('fullscreen-slide').addEventListener('click',()=>{if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen?.()});const requested=Number(location.hash.match(/diapositiva-(\d+)/)?.[1]);showSlide(requested?requested-1:0)}
-const validationForm=document.getElementById('validation-demo');validationForm?.addEventListener('submit',event=>{event.preventDefault();const name=document.getElementById('demo-name'),email=document.getElementById('demo-email'),feedback=document.getElementById('form-feedback');name.setAttribute('aria-invalid',String(!name.value.trim()));email.setAttribute('aria-invalid',String(!email.validity.valid||!email.value.trim()));if(!name.value.trim()){feedback.textContent='Escribe tu nombre para continuar.';name.focus()}else if(!email.validity.valid||!email.value.trim()){feedback.textContent='Escribe un correo válido, por ejemplo nombre@correo.com.';email.focus()}else{feedback.textContent='Datos válidos. Recordatorio guardado solo en esta demostración.'}});
-const syncMessages={pending:['Pendiente de sincronización','Guardado localmente; el servidor aún no confirmó la entrega.'],synced:['Confirmado por el servidor (simulación)','La operación figura como aceptada en este ejemplo.'],conflict:['Conflicto por resolver','Los datos locales y remotos difieren. Revisa antes de sobrescribir.']};document.querySelectorAll('[data-sync]').forEach(button=>button.addEventListener('click',()=>{const [title,description]=syncMessages[button.dataset.sync];document.querySelector('#sync-status b').textContent=title;document.querySelector('#sync-status small').textContent=description}));document.querySelectorAll('[data-touch]').forEach(button=>button.addEventListener('click',()=>{document.getElementById('touch-feedback').textContent='Acción seleccionada: '+button.dataset.touch+'.'}));
+// Preferencias compartidas: el sistema aporta el valor inicial.
+const root = document.documentElement;
+const scheme = window.matchMedia("(prefers-color-scheme: dark)");
+const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+const preference = {
+  read(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  },
+  write(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch {
+      /* La interfaz funciona sin almacenamiento. */
+    }
+  },
+};
+const savedTheme = preference.read("calibrar-theme");
+if (["light", "dark"].includes(savedTheme)) root.dataset.theme = savedTheme;
+function isDark() {
+  return root.dataset.theme ? root.dataset.theme === "dark" : scheme.matches;
+}
+function updateThemeControl() {
+  document
+    .getElementById("theme-toggle")
+    ?.setAttribute("aria-pressed", String(isDark()));
+  document
+    .querySelector('meta[name="theme-color"]')
+    ?.setAttribute("content", isDark() ? "#19263b" : "#f2f5fa");
+}
+document.getElementById("theme-toggle")?.addEventListener("click", () => {
+  root.dataset.theme = isDark() ? "light" : "dark";
+  preference.write("calibrar-theme", root.dataset.theme);
+  updateThemeControl();
+});
+scheme.addEventListener("change", updateThemeControl);
+updateThemeControl();
+function updateMotionControl() {
+  const reduced =
+    reducedMotion.matches || preference.read("calibrar-motion") === "reduced";
+  root.dataset.motion = reduced ? "reduced" : "full";
+  const button = document.getElementById("motion-toggle");
+  button?.setAttribute("aria-pressed", String(reduced));
+  if (button) {
+    button.disabled = reducedMotion.matches;
+    button.title = reducedMotion.matches
+      ? "Movimiento reducido por la preferencia del sistema"
+      : "Reducir las transiciones de la interfaz";
+  }
+}
+document.getElementById("motion-toggle")?.addEventListener("click", () => {
+  preference.write(
+    "calibrar-motion",
+    root.dataset.motion === "reduced" ? "full" : "reduced",
+  );
+  updateMotionControl();
+});
+reducedMotion.addEventListener("change", updateMotionControl);
+updateMotionControl();
+// La entrada del instrumento ocurre una vez, incluso al volver a la portada.
+setTimeout(() => (root.dataset.ready = "true"), 800);
 
-document.querySelectorAll('[data-state]').forEach(button=>button.setAttribute('aria-pressed','false'));
+// Un teléfono para reconocer causa y efecto en la portada.
+const coverDevice = document.getElementById("cover-device");
+document.querySelectorAll("[data-cover-platform]").forEach((button) => {
+  button.addEventListener("click", () => {
+    document
+      .querySelectorAll("[data-cover-platform]")
+      .forEach((item) =>
+        item.setAttribute("aria-pressed", String(item === button)),
+      );
+    coverDevice.classList.toggle(
+      "material",
+      button.dataset.coverPlatform === "android",
+    );
+  });
+});
+document.getElementById("cover-confirm")?.addEventListener("click", (event) => {
+  const confirmed = event.currentTarget.dataset.confirmed === "true";
+  event.currentTarget.dataset.confirmed = String(!confirmed);
+  event.currentTarget.textContent = confirmed
+    ? "Confirmar cita de prueba"
+    : "Reiniciar prueba";
+  coverDevice.querySelector(".device-message").textContent = confirmed
+    ? "Cita disponible para revisar."
+    : "Cita confirmada en esta demostración.";
+});
+
+// Presentación: misma navegación por botones, teclado, índice y gesto táctil.
+const slides = [...document.querySelectorAll(".presentation .slide")];
+if (slides.length) {
+  let current = 0;
+  const counter = document.getElementById("slide-counter");
+  const label = document.getElementById("slide-label");
+  const jump = document.getElementById("slide-jump");
+  const progress = document.querySelector(".progress-track");
+  const fill = document.getElementById("progress-fill");
+  const previous = document.getElementById("prev-slide");
+  const next = document.getElementById("next-slide");
+  slides.forEach((slide, index) =>
+    jump.add(new Option(slide.dataset.title, String(index))),
+  );
+  function showSlide(index, moveFocus = false) {
+    current = Math.max(0, Math.min(slides.length - 1, index));
+    slides.forEach((slide, i) => {
+      slide.hidden = i !== current;
+      slide.classList.toggle("active", i === current);
+      slide.setAttribute("aria-hidden", String(i !== current));
+    });
+    jump.value = String(current);
+    counter.textContent = `${String(current + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
+    label.textContent = slides[current].dataset.title;
+    progress.setAttribute("aria-valuenow", String(current + 1));
+    progress.setAttribute(
+      "aria-valuetext",
+      `${current + 1} de ${slides.length}: ${slides[current].dataset.title}`,
+    );
+    fill.style.width = `${((current + 1) / slides.length) * 100}%`;
+    previous.disabled = current === 0;
+    next.disabled = current === slides.length - 1;
+    history.replaceState(null, "", `#diapositiva-${current + 1}`);
+    if (moveFocus) {
+      const heading = slides[current].querySelector("h1, h2");
+      heading.tabIndex = -1;
+      heading.focus({ preventScroll: true });
+      window.scrollTo({ top: 0, behavior: "instant" });
+    }
+  }
+  previous.addEventListener("click", () => showSlide(current - 1));
+  next.addEventListener("click", () => showSlide(current + 1));
+  jump.addEventListener("change", () => showSlide(Number(jump.value)));
+  document
+    .querySelectorAll("[data-next]")
+    .forEach((button) =>
+      button.addEventListener("click", () => showSlide(current + 1, true)),
+    );
+  document.addEventListener("keydown", (event) => {
+    if (
+      event.altKey ||
+      event.ctrlKey ||
+      event.metaKey ||
+      event.target.closest('input, select, textarea, [contenteditable="true"]')
+    )
+      return;
+    const action = {
+      ArrowRight: current + 1,
+      PageDown: current + 1,
+      ArrowLeft: current - 1,
+      PageUp: current - 1,
+      Home: 0,
+      End: slides.length - 1,
+    };
+    if (event.key in action) {
+      event.preventDefault();
+      showSlide(action[event.key], true);
+    } else if (event.key === " " && !event.target.closest("button, a")) {
+      event.preventDefault();
+      showSlide(current + 1, true);
+    }
+  });
+  const stage = document.getElementById("slide-stage");
+  let touchStart = null;
+  stage.addEventListener(
+    "touchstart",
+    (event) => {
+      if (event.target.closest("button, a, input, select")) return;
+      const touch = event.changedTouches[0];
+      touchStart = { x: touch.clientX, y: touch.clientY };
+    },
+    { passive: true },
+  );
+  stage.addEventListener(
+    "touchend",
+    (event) => {
+      if (!touchStart) return;
+      const touch = event.changedTouches[0];
+      const dx = touch.clientX - touchStart.x;
+      const dy = touch.clientY - touchStart.y;
+      touchStart = null;
+      if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 2)
+        showSlide(current + (dx < 0 ? 1 : -1), true);
+    },
+    { passive: true },
+  );
+  const exposure = document.getElementById("fullscreen-slide");
+  function setExposure(active) {
+    document.body.classList.toggle("exposure-mode", active);
+    exposure.setAttribute("aria-pressed", String(active));
+    exposure.textContent = active ? "Salir de exposición" : "Modo exposición";
+  }
+  exposure.addEventListener("click", async () => {
+    if (document.body.classList.contains("exposure-mode")) {
+      setExposure(false);
+      if (document.fullscreenElement) await document.exitFullscreen();
+    } else {
+      setExposure(true);
+      try {
+        await document.documentElement.requestFullscreen?.();
+      } catch {
+        document.getElementById("presentation-notice").textContent =
+          "Modo exposición activado. El navegador no permite pantalla completa.";
+      }
+    }
+  });
+  document.addEventListener("fullscreenchange", () => {
+    if (!document.fullscreenElement) setExposure(false);
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") setExposure(false);
+  });
+  const requested = Number(location.hash.match(/diapositiva-(\d+)/)?.[1]);
+  showSlide(requested ? requested - 1 : 0);
+}
+
+// Laboratorio: conservar los escenarios y hacer visibles sus resultados.
+const platformButtons = document.querySelectorAll("[data-platform]");
+platformButtons.forEach((button) =>
+  button.addEventListener("click", () => {
+    platformButtons.forEach((item) => {
+      item.classList.toggle("active", item === button);
+      item.setAttribute("aria-pressed", String(item === button));
+    });
+    document
+      .getElementById("platform-phone")
+      .classList.toggle("material", button.dataset.platform === "android");
+  }),
+);
+const states = {
+  loading: [
+    "◌",
+    "Cargando citas",
+    "Estamos consultando la información. Espera un momento.",
+    "Consulta en curso",
+  ],
+  empty: [
+    "＋",
+    "Aún no hay citas",
+    "Cuando agendes una cita aparecerá aquí.",
+    "Agendar cita",
+  ],
+  error: [
+    "!",
+    "No pudimos cargar las citas",
+    "Comprueba la conexión y vuelve a intentarlo.",
+    "Reintentar consulta",
+  ],
+  offline: [
+    "⌁",
+    "Sin conexión",
+    "Puedes consultar los datos locales de ejemplo; no hay sincronización activa.",
+    "Ver datos locales",
+  ],
+  success: [
+    "✓",
+    "Consulta completada",
+    "Tus citas están actualizadas.",
+    "Ver citas",
+  ],
+};
+let currentState = "success";
+function setDemoState(state) {
+  currentState = state;
+  document.querySelectorAll("[data-state]").forEach((button) => {
+    button.setAttribute("aria-pressed", String(button.dataset.state === state));
+    button.classList.toggle("active", button.dataset.state === state);
+  });
+  const [icon, title, message, action] = states[state];
+  document.getElementById("state-icon").textContent = icon;
+  document.getElementById("state-title").textContent = title;
+  document.getElementById("state-message").textContent = message;
+  const button = document.getElementById("state-action");
+  button.textContent = action;
+  button.disabled = state === "loading";
+}
+if (document.getElementById("state-action")) {
+  setDemoState("success");
+  document
+    .querySelectorAll("[data-state]")
+    .forEach((button) =>
+      button.addEventListener("click", () =>
+        setDemoState(button.dataset.state),
+      ),
+    );
+  document.getElementById("state-action").addEventListener("click", () => {
+    if (currentState === "error") {
+      setDemoState("success");
+      document.getElementById("state-message").textContent =
+        "Reintento completado en esta simulación. Cita: jueves, 10:30 a. m.";
+    } else if (currentState === "empty") {
+      document.getElementById("date-demo").focus();
+      document.getElementById("date-demo").scrollIntoView({ block: "center" });
+    } else {
+      document.getElementById("state-message").textContent =
+        currentState === "offline"
+          ? "Dato local de ejemplo: consulta general, jueves a las 10:30 a. m. Sin confirmar con el servidor."
+          : "Consulta general: jueves, 10:30 a. m. Registro de demostración.";
+    }
+  });
+}
+document.getElementById("appointment-btn")?.addEventListener("click", () => {
+  document.getElementById("appointment-feedback").textContent =
+    "Siguiente paso: revisar y confirmar la cita.";
+});
+const criteria = [
+  ...document.querySelectorAll('.check-card input[type="checkbox"]'),
+];
+criteria.forEach((input) =>
+  input.addEventListener("change", () => {
+    document.getElementById("check-count").textContent =
+      `${criteria.filter((item) => item.checked).length} de ${criteria.length} criterios activados`;
+  }),
+);
+document
+  .getElementById("adaptive-width")
+  ?.addEventListener("input", (event) => {
+    const compact = Number(event.target.value) < 50;
+    const preview = document.getElementById("adaptive-preview");
+    preview.classList.toggle("compact", compact);
+    preview.style.maxWidth = `${240 + Number(event.target.value) * 3}px`;
+    document.getElementById("width-value").textContent = compact
+      ? "Compacto"
+      : "Amplio";
+  });
+const validationForm = document.getElementById("validation-demo");
+validationForm?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const name = document.getElementById("demo-name");
+  const email = document.getElementById("demo-email");
+  const feedback = document.getElementById("form-feedback");
+  const invalidName = !name.value.trim();
+  const invalidEmail = !email.value.trim() || !email.validity.valid;
+  name.setAttribute("aria-invalid", String(invalidName));
+  email.setAttribute("aria-invalid", String(invalidEmail));
+  if (invalidName) {
+    feedback.textContent = "Escribe tu nombre para continuar.";
+    name.focus();
+  } else if (invalidEmail) {
+    feedback.textContent =
+      "Escribe un correo válido, por ejemplo nombre@correo.com.";
+    email.focus();
+  } else
+    feedback.textContent =
+      "Datos válidos. Recordatorio guardado solo en esta demostración.";
+});
+validationForm
+  ?.querySelectorAll("input")
+  .forEach((input) =>
+    input.addEventListener("input", () =>
+      input.removeAttribute("aria-invalid"),
+    ),
+  );
+const syncMessages = {
+  pending: [
+    "Pendiente de sincronización",
+    "Guardado localmente; el servidor aún no confirmó la entrega.",
+  ],
+  synced: [
+    "Confirmado por el servidor (simulación)",
+    "La operación figura como aceptada en este ejemplo.",
+  ],
+  conflict: [
+    "Conflicto por resolver",
+    "Los datos locales y remotos difieren. Revisa antes de sobrescribir.",
+  ],
+};
+document.querySelectorAll("[data-sync]").forEach((button) =>
+  button.addEventListener("click", () => {
+    const [title, description] = syncMessages[button.dataset.sync];
+    document.querySelector("#sync-status b").textContent = title;
+    document.querySelector("#sync-status small").textContent = description;
+  }),
+);
+document.querySelectorAll("[data-touch]").forEach((button) =>
+  button.addEventListener("click", () => {
+    if (button.dataset.touch === "favorito") {
+      const selected = button.getAttribute("aria-pressed") !== "true";
+      button.setAttribute("aria-pressed", String(selected));
+      button.textContent = selected ? "★" : "☆";
+      document.getElementById("touch-feedback").textContent = selected
+        ? "Cita añadida a favoritos en esta demo."
+        : "Cita retirada de favoritos en esta demo.";
+    } else
+      document.getElementById("touch-feedback").textContent =
+        `Acción de ejemplo seleccionada: ${button.dataset.touch}.`;
+  }),
+);
